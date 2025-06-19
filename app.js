@@ -1,88 +1,172 @@
-const $  = sel => document.querySelector(sel);
-const $$ = sel => document.querySelectorAll(sel);
+const $ = q => document.querySelector(q)
+
+
+
 function toast(msg, ms = 3000) {
-  const t = $("#toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), ms);
+  const t = $("#toast")
+  t.textContent = msg
+  t.classList.add("show")
+  setTimeout(() => t.classList.remove("show"), ms)
 }
 
-const tabButtons = {
-  random: $("#tabRandom"),
-  album:  $("#tabAlbum")
-};
-const sections = {
-  random: $("#sectionRandom"),
-  album:  $("#sectionAlbum")
-};
 
-function switchTab(which) {
-  const isRandom = which === "random";
-  const isAlbum  = which === "album";
 
-  Object.entries(tabButtons).forEach(([k, btn]) => {
-    btn.classList.toggle("active", k === which);
-    sections[k].classList.toggle("hidden", k !== which);
-  });
+const btnR = $("#tabRandom")
+const btnA = $("#tabAlbum")
+const secR = $("#sectionRandom")
+const secA = $("#sectionAlbum")
 
-  $("#frame").style.display = isRandom ? "block" : "none";
-  $("#randomControls").style.display = isRandom ? "flex" : "none";
+let albumClicks = 0
+let albumBuilt  = false
+const THRESHOLD = 10
 
-  if (isAlbum) {
-    loadAlbum();
-  } else {
-    $("#album").innerHTML = "";
-    delete $("#album").dataset.loaded;
+
+
+btnR.onclick = () => showRandom(true)
+
+btnA.onclick = () => {
+  albumClicks++
+  if (albumClicks % THRESHOLD === 0) confetti()
+  showRandom(false)
+}
+
+
+
+function showRandom(show) {
+  btnR.classList.toggle("active", show)
+  btnA.classList.toggle("active", !show)
+  secR.classList.toggle("hidden", !show)
+  secA.classList.toggle("hidden",  show)
+
+  $("#frame").style.display          = show ? "block" : "none"
+  $("#randomControls").style.display = show ? "flex"  : "none"
+
+  if (!show && !albumBuilt) buildAlbum()
+}
+
+
+
+const facts = [
+  "Cats sleep 70% of their lives.",
+  "A group of cats is called a clowder.",
+  "Cats can jump six times their length.",
+  "Oldest cat lived to 38 years.",
+  "A cat’s purr may heal bones!",
+  "Some cats love water (Turkish Vans)."
+]
+
+function newFact() {
+  $("#catFact").textContent =
+    `random cat fact: ${facts[Math.random() * facts.length | 0]}`
+}
+
+
+
+const STATIC = "https://cataas.com/cat"
+const GIF    = "https://cataas.com/cat/gif"
+
+const img    = $("#cat")
+const loader = $("#loaderRandom")
+const btnMore = $("#btnMore")
+const gifT    = $("#gifToggle")
+
+
+
+function fetchCat() {
+  loader.style.display = "flex"
+  img.style.display    = "none"
+  btnMore.disabled     = true
+
+  const base = gifT.checked ? GIF : STATIC
+  const q    = gifT.checked
+    ? `?_=${Date.now()}`
+    : `?width=${500 + (Math.random() * 200 | 0)}&height=${350 + (Math.random() * 150 | 0)}&_=${Date.now()}`
+
+  img.src = base + q
+  newFact()
+}
+
+
+
+img.onload = () => {
+  loader.style.display = "none"
+  img.style.display    = "block"
+  btnMore.disabled     = false
+  localStorage.lastCat = img.src
+}
+
+img.onerror = () => {
+  toast("Cat escaped — retry")
+  fetchCat()
+}
+
+btnMore.onclick = fetchCat
+
+
+
+if (localStorage.lastCat) {
+  img.src = localStorage.lastCat
+  img.style.display = "block"
+} else fetchCat()
+
+
+
+let confettiActive = false
+let activePieces   = 0
+
+
+
+function makePiece() {
+  const d = document.createElement("div")
+  d.className = "confetti"
+
+  d.style.left            = Math.random() * 100 + "vw"
+  d.style.backgroundColor = `hsl(${Math.random() * 360},80%,60%)`
+  d.style.animationDelay  = Math.random() + "s"
+  d.style.animationDuration = 2.5 + Math.random() * 2 + "s"
+
+  activePieces++
+  d.onanimationend = () => {
+    d.remove()
+    if (--activePieces === 0) confettiActive = false
   }
-}
-tabButtons.random.onclick = () => switchTab("random");
-tabButtons.album.onclick  = () => switchTab("album");
-
-const CAT_URL      = "https://cataas.com/cat";
-const imgRandom    = $("#cat");
-const loaderRandom = $("#loaderRandom");
-const btnMore      = $("#btnMore");
-
-function fetchRandomCat() {
-  loaderRandom.style.display = "flex";
-  imgRandom.style.display    = "none";
-  btnMore.disabled = true;
-
-  const w = 500 + Math.floor(Math.random() * 200);
-  const h = 350 + Math.floor(Math.random() * 150);
-  imgRandom.src = `${CAT_URL}?width=${w}&height=${h}&_=${Date.now()}`;
+  return d
 }
 
-imgRandom.addEventListener("load", () => {
-  loaderRandom.style.display = "none";
-  imgRandom.style.display    = "block";
-  btnMore.disabled = false;
-});
 
-imgRandom.addEventListener("error", () => {
-  toast("Cat ran away – retrying");
-  fetchRandomCat();
-});
 
-btnMore.addEventListener("click", fetchRandomCat);
-fetchRandomCat();
+function confetti() {
+  if (confettiActive) return
+  confettiActive = true
 
-const album = $("#album");
+  const TOTAL = 400
+  const BATCH = 25
+  let spawned = 0
 
-const MY_CAT_IMAGES = [
-  "mycat/1.jpg",
-  "mycat/2.jpg",
-  "mycat/3.jpg"
-];
+  function spawn() {
+    for (let i = 0; i < BATCH && spawned < TOTAL; i++, spawned++) {
+      document.body.appendChild(makePiece())
+    }
+    if (spawned < TOTAL) requestAnimationFrame(spawn)
+  }
 
-function loadAlbum() {
-  if (album.dataset.loaded) return;
-  MY_CAT_IMAGES.forEach(addAlbumImg);
-  album.dataset.loaded = "true";
+  spawn()
 }
 
-function addAlbumImg(src) {
-  const img = document.createElement("img");
-  img.src = src;
-  album.prepend(img);
+
+
+const album = $("#album")
+const IMGS  = ["mycat/1.jpg", "mycat/2.jpg", "mycat/3.jpg"]
+
+function buildAlbum() {
+  IMGS.forEach(src => {
+    const i = new Image()
+    i.src = src
+    album.appendChild(i)
+  })
+  albumBuilt = true
 }
+
+
+
+showRandom(true)

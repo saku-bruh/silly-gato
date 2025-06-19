@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>thiscatdoesnotexist</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="preload" href="fonts/comicsans.ttf" as="font" type="font/ttf" crossorigin="anonymous" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preload" href="fonts/comicsans.ttf" as="font" type="font/ttf" crossorigin="anonymous">
 </head>
 <body>
 
@@ -19,11 +19,15 @@
   <section id="sectionRandom">
     <div id="frame">
       <div id="loaderRandom" class="loader"><div class="spinner"></div></div>
-      <img id="cat" alt="a wild gato has appeared!" />
+      <img id="cat" alt="a wild gato has appeared!">
     </div>
+
     <div id="randomControls">
       <button id="btnMore" class="primary">regenerate cat</button>
+      <label class="gif-toggle"><input type="checkbox" id="gifToggle"> show gif instead</label>
     </div>
+
+    <div id="catFact" class="cat-fact"></div>
   </section>
 
   <section id="sectionAlbum" class="hidden">
@@ -32,11 +36,11 @@
 
   <div id="toast"></div>
 
-<footer>
-  <span>Random images provided by <a href="https://cataas.com">cataas.com</a></span>
-  <span class="footer-separator">Parody site based on <a href="https://thispersondoesnotexist.com/">thispersondoesnotexist</a></span>
-</footer>
+  <footer>
+    Random images provided by <a href="https://cataas.com">cataas.com</a><br>
+    Parody site based on <a href="https://thispersondoesnotexist.com/">thispersondoesnotexist</a>
+  </footer>
 
-  <script src="app.js" defer></script>
+  <script src="app.js"></script>
 </body>
 </html>

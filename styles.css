@@ -1,19 +1,23 @@
 @font-face {
   font-family: 'ComicSansCustom';
   src: url('fonts/comicsans.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
 }
 
-html, body, h1, h2, h3, h4, h5, h6, nav button, button, input, select, textarea {
+html,
+body,
+h1,
+button,
+nav button {
   font-family: 'ComicSansCustom', sans-serif;
 }
 
+
+
 :root {
-  --accent: #ff00bb;
-  --bg1: #000000;
+  --accent: #ff5f9e;
+  --bg1: #000;
   --bg2: #1e1e1e;
-  --border: #ffffff;
+  --border: #fff;
 }
 
 * {
@@ -21,6 +25,8 @@ html, body, h1, h2, h3, h4, h5, h6, nav button, button, input, select, textarea 
   margin: 0;
   padding: 0;
 }
+
+
 
 body {
   min-height: 100vh;
@@ -35,6 +41,8 @@ body {
   margin-top: 1.2rem;
   font-size: 2.6rem;
 }
+
+
 
 nav {
   margin-top: 2rem;
@@ -54,25 +62,22 @@ nav button {
   transition: transform 0.2s;
 }
 
-nav button::after {
-  content: "";
+nav button:hover,
+nav button.active {
+  transform: scale(1.06);
+}
+
+nav button.active::after {
+  content: '';
   position: absolute;
   inset: -3px;
   border-radius: 50px;
   border: 2px solid var(--accent);
   filter: blur(4px);
-  opacity: 0;
-  transition: 0.3s;
-}
-
-nav button.active,
-nav button:hover {
-  transform: scale(1.06);
-}
-
-nav button.active::after {
   opacity: 0.6;
 }
+
+
 
 #sectionRandom {
   display: flex;
@@ -97,14 +102,16 @@ nav button.active::after {
   height: 100%;
   object-fit: cover;
   display: none;
-  animation: fadeIn 0.6s ease-out forwards;
+  animation: fade 0.6s forwards;
 }
 
-@keyframes fadeIn {
+@keyframes fade {
   to {
     opacity: 1;
   }
 }
+
+
 
 .loader {
   position: absolute;
@@ -112,7 +119,6 @@ nav button.active::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
   background: #ffffff08;
   backdrop-filter: blur(6px);
 }
@@ -132,10 +138,13 @@ nav button.active::after {
   }
 }
 
+
+
 #randomControls {
   margin-top: 1rem;
   display: flex;
   gap: 0.8rem;
+  align-items: center;
 }
 
 button.primary {
@@ -153,10 +162,23 @@ button.primary:hover {
   transform: scale(1.05);
 }
 
-button.primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.gif-toggle {
+  font-size: 0.9rem;
+  cursor: pointer;
+  user-select: none;
 }
+
+
+
+.cat-fact {
+  margin-top: 1rem;
+  max-width: 80%;
+  text-align: center;
+  font-size: 1rem;
+  color: #ffcc99;
+}
+
+
 
 #album {
   display: grid;
@@ -170,12 +192,12 @@ button.primary:disabled {
 #album img {
   max-width: 100%;
   height: auto;
-  display: block;
-  margin: 0 auto;
   border-radius: 8px;
   opacity: 0;
-  animation: fadeIn 0.6s forwards;
+  animation: fade 0.6s forwards;
 }
+
+
 
 #toast {
   position: fixed;
@@ -195,10 +217,13 @@ button.primary:disabled {
   opacity: 1;
 }
 
+
+
 footer {
   margin: 3rem 0 0.8rem;
   font-size: 0.85rem;
   color: #fff8;
+  text-align: center;
 }
 
 a {
@@ -206,17 +231,30 @@ a {
 }
 
 .hidden {
-  display: none;
-  flex-direction: column;
-  align-items: center;
+  display: none !important;
 }
 
-footer {
-  display: flex;
-  flex-direction: column; /* or row with gap if preferred */
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.85rem;
-  color: #fff8;
-  margin: 3rem 0 0.8rem;
+
+
+.confetti {
+  position: fixed;
+  top: -15vh;
+  width: 8px;
+  height: 12px;
+  pointer-events: none;
+  z-index: 9999;
+  animation: fall 4s linear forwards, spinZ 3s linear infinite;
+}
+
+@keyframes fall {
+  to {
+    top: 105vh;
+    opacity: 0;
+  }
+}
+
+@keyframes spinZ {
+  to {
+    transform: rotate(360deg);
+  }
 }
