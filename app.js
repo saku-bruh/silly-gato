@@ -65,7 +65,7 @@ imgRandom.addEventListener("error", () => {
 });
 
 btnMore.addEventListener("click", fetchRandomCat);
-fetchRandomCat(); 
+fetchRandomCat();
 
 const album = $("#album");
 

@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>cats</title>
+  <title>thiscatdoesnotexist</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="styles.css" />
+  <link rel="preload" href="fonts/comicsans.ttf" as="font" type="font/ttf" crossorigin="anonymous" />
 </head>
 <body>
 
-  <h1 class="title">silly gatos</h1>
+  <h1 class="title">thiscatdoesnotexist</h1>
 
   <nav>
     <button id="tabRandom" class="active">gatos</button>
@@ -21,20 +22,21 @@
       <img id="cat" alt="a wild gato has appeared!" />
     </div>
     <div id="randomControls">
-      <button id="btnMore" class="primary">change cat</button>
+      <button id="btnMore" class="primary">regenerate cat</button>
     </div>
   </section>
 
-<section id="sectionAlbum" class="hidden">
-  <div id="album"></div>
-</section>
+  <section id="sectionAlbum" class="hidden">
+    <div id="album"></div>
+  </section>
 
   <div id="toast"></div>
 
-  <footer>
-    Random images provided by <a href="https://cataas.com">cataas.com</a>
-  </footer>
+<footer>
+  <span>Random images provided by <a href="https://cataas.com">cataas.com</a></span>
+  <span class="footer-separator">Parody site based on <a href="https://thispersondoesnotexist.com/">thispersondoesnotexist</a></span>
+</footer>
 
-  <script src="app.js"></script>
+  <script src="app.js" defer></script>
 </body>
 </html>
