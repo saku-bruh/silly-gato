@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>silly gatos</title>
+  <style>
+    *{box-sizing:border-box}
+    body{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      margin:0;min-height:100vh;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      background:#000000;color:#ffffff}
+    h1{margin:.2em 0;font-size:2.4rem;text-align:center}
+    #frame{
+      width:min(90vw,640px);height:420px;
+      border:8px dashed #ffffff;border-radius:12px;
+      position:relative;overflow:hidden;
+      box-shadow:0 6px 18px rgb(0 0 0 / .25)}
+    #cat{width:100%;height:100%;object-fit:cover;display:none}
+    #loader{
+      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+      font-size:1.4rem;background:#fff}
+    button{
+      margin-top:1rem;padding:.7rem 1.4rem;font-size:1.05rem;
+      border:none;border-radius:6px;background:#ffffff;color:#000;cursor:pointer;
+      transition:transform .12s}
+    button:hover{transform:scale(1.06)}
+    button:disabled{opacity:.6;cursor:not-allowed}
+    footer{margin-top:2rem;font-size:.85rem;color:#ffffff;text-align:center}
+    a{color:inherit}
+  </style>
+</head>
+<body>
+  <h1>silly gatos</h1>
+
+  <div id="frame">
+    <div id="loader">Summon a random cat</div>
+    <img id="cat" alt="A wild gato has appeared">
+  </div>
+
+  <button id="more">Change cat</button>
+
+  <footer>
+    Images via <a href="https://cataas.com">cataas.com</a>
+  </footer>
+
+<script>
+const CAT_URL = 'https://cataas.com/cat';
+const IMG     = document.getElementById('cat');
+const LOAD    = document.getElementById('loader');
+const BTN     = document.getElementById('more');
+
+
+function fetchCat () {
+  LOAD.style.display = 'flex';
+  IMG.style.display  = 'none';
+  BTN.disabled = true;
+  const w = 500 + Math.floor(Math.random()*200);
+  const h = 350 + Math.floor(Math.random()*150);
+  IMG.src = `${CAT_URL}?width=${w}&height=${h}&_=${Date.now()}`;
+}
+
+IMG.addEventListener('load', () => {
+  LOAD.style.display = 'none';
+  IMG.style.display  = 'block';
+  BTN.disabled = false;
+});
+
+IMG.addEventListener('error', () => {
+  console.warn('That cat escaped, trying another…');
+  fetchCat();
+});
+
+BTN.addEventListener('click', fetchCat);
+
+fetchCat();
+</script>
+</body>
+</html>
