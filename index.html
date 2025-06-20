@@ -13,6 +13,7 @@
 
   <nav>
     <button id="tabRandom" class="active">gatos</button>
+    <button id="tabBookmarks">bookmarks</button>
     <button id="tabAlbum">my acoustic car</button>
   </nav>
 
@@ -24,6 +25,7 @@
 
     <div id="randomControls">
       <button id="btnMore" class="primary">regenerate cat</button>
+      <button id="btnSave" class="primary">bookmark cat</button>
       <label class="gif-toggle"><input type="checkbox" id="gifToggle"> show gif instead</label>
     </div>
 
@@ -32,6 +34,11 @@
 
   <section id="sectionAlbum" class="hidden">
     <div id="album"></div>
+  </section>
+
+  <section id="sectionBookmarks" class="hidden">
+    <div id="bookmarkGrid"></div>
+    <button id="btnClear" class="primary" disabled>clear bookmarks</button>
   </section>
 
   <div id="toast"></div>
