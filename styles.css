@@ -7,7 +7,7 @@
   --text-light: #fff;
 }
 
-/* Force-hide any element carrying the “hidden” attribute */
+/* Always hide elements carrying the hidden attribute */
 [hidden] { display: none !important; }
 
 /* =====================  Font face  =================================== */
@@ -18,20 +18,14 @@
 }
 
 /* Force Comic Sans everywhere */
-html,
-body,
-h1,
-button,
-nav button {
+html, body, h1, button, nav button {
   font-family: 'ComicSansCustom', sans-serif;
 }
 
 /* =====================  Base reset  ================================== */
 *,
 *::before,
-*::after {
-  box-sizing: border-box;
-}
+*::after { box-sizing: border-box; }
 
 body {
   min-height: 100vh;
@@ -51,130 +45,83 @@ main > section {
 }
 
 /* =====================  Header / Tabs  =============================== */
-.title {
-  margin-top: 1.1rem;
-  font-size: 2.4rem;
-  text-align: center;
-}
+.title { margin-top: 1.1rem; font-size: 2.4rem; text-align: center; }
 
-nav {
-  margin-top: 2rem;
-}
+nav { margin-top: 2rem; }
 
 ul.tabs {
-  display: flex;
-  gap: 1rem;
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  display: flex; gap: 1rem; list-style: none; padding: 0; margin: 0;
 }
 
 ul.tabs > li > button {
   background: var(--accent);
   border: none;
   color: #fff;
-  padding: 0.6rem 1.2rem;
+  padding: .6rem 1.2rem;
   font-size: 1rem;
   border-radius: 50px;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform .2s;
   position: relative;
 }
 
 ul.tabs > li > button:hover,
-ul.tabs > li > button.active {
-  transform: scale(1.06);
-}
+ul.tabs > li > button.active { transform: scale(1.06); }
 
 ul.tabs > li > button.active::after {
-  content: '';
-  position: absolute;
-  inset: -3px;
-  border-radius: 50px;
-  border: 2px solid var(--accent);
-  filter: blur(4px);
-  opacity: 0.6;
+  content: ''; position: absolute; inset: -3px;
+  border-radius: 50px; border: 2px solid var(--accent);
+  filter: blur(4px); opacity: .6;
 }
 
 /* =====================  Random-cat frame  ============================ */
 #frame {
-  width: min(92vw, 640px);
-  height: 420px;
-  margin-top: 1.5rem;
-  border: 4px dashed var(--border);
-  border-radius: 16px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 8px 30px rgb(0 0 0 / 0.35);
+  width: min(92vw, 640px); height: 420px; margin-top: 1.5rem;
+  border: 4px dashed var(--border); border-radius: 16px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 8px 30px rgb(0 0 0 / .35);
 }
 
 #frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; transition: opacity .4s ease;
 }
-
 #frame img.loaded { opacity: 1; }
 
 /* Loader overlay */
 .loader {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #ffffff0b;
-  backdrop-filter: blur(6px);
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: #ffffff0b; backdrop-filter: blur(6px);
 }
-
 .spinner {
-  width: 50px;
-  height: 50px;
-  border: 6px solid #fff3;
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+  width: 50px; height: 50px;
+  border: 6px solid #fff3; border-top-color: #fff;
+  border-radius: 50%; animation: spin 1s linear infinite;
 }
-
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* =====================  Controls  ==================================== */
 .controls {
   margin-top: 1rem;
-  display: flex;
-  gap: 0.8rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
+  display: flex; gap: .8rem; flex-wrap: wrap;
+  justify-content: center; align-items: center;
 }
-
 button.primary {
-  background: #fff;
-  color: #000;
-  font-weight: 600;
-  padding: 0.7rem 1.4rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: transform 0.15s ease;
+  background: #fff; color: #000; font-weight: 600;
+  padding: .7rem 1.4rem; border: none; border-radius: 8px;
+  cursor: pointer; transition: transform .15s ease;
 }
-
 button.primary:hover   { transform: scale(1.05); }
-button.primary:disabled { opacity: 0.45; cursor: not-allowed; }
+button.primary:disabled { opacity: .45; cursor: not-allowed; }
+.gif-toggle { font-size: .9rem; cursor: pointer; user-select: none; }
 
-.gif-toggle { font-size: 0.9rem; cursor: pointer; user-select: none; }
-
+/* Cat fact (always lower-case) */
 .cat-fact {
-  margin-top: 1rem;
-  width: 100%;
-  text-align: center;
-  font-size: 1rem;
-  color: #ffcc99;
+  margin-top: 1rem; width: 100%; text-align: center;
+  font-size: 1rem; color: #ffcc99;
+  text-transform: lowercase;
 }
-
-.cat-fact { text-transform: lowercase; }
 
 /* =====================  Image grids  ================================= */
 .masonry {
@@ -182,59 +129,54 @@ button.primary:disabled { opacity: 0.45; cursor: not-allowed; }
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 14px;
   margin: 20px auto 0;
-  width: 92vw;
-  max-width: 900px;
+  width: 92vw; max-width: 900px;
 }
-
 .masonry img {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  width: 100%; height: auto; border-radius: 8px;
+  opacity: 0; transition: opacity .4s ease;
 }
-
 .masonry img.loaded { opacity: 1; }
-
-/* “clear bookmarks” centred */
 #btnClear { display: block; margin: 22px auto 0; }
 
 /* =====================  Toast  ======================================= */
 #toast {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  translate: -50% 0;
-  background: #e53935;
-  color: #fff;
-  padding: 0.8rem 1.4rem;
-  border-radius: 8px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease;
+  position: fixed; bottom: 30px; left: 50%; translate: -50% 0;
+  background: #e53935; color: #fff; padding: .8rem 1.4rem;
+  border-radius: 8px; opacity: 0; pointer-events: none;
+  transition: opacity .4s ease;
 }
-
 #toast.show { opacity: 1; }
 
 /* =====================  Confetti  ==================================== */
 .confetti {
-  position: fixed;
-  top: -15vh;
-  width: 8px;
-  height: 12px;
-  pointer-events: none;
-  z-index: 9999;
+  position: fixed; top: -15vh; width: 8px; height: 12px;
+  pointer-events: none; z-index: 9999;
   animation: fall 3.5s linear forwards, spinZ 3s linear infinite;
 }
-
 @keyframes fall { to { top: 105vh; opacity: 0; } }
 @keyframes spinZ { to { transform: rotate(360deg); } }
 
+/* =====================  Fullscreen preview overlay  ================== */
+#overlay {
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(0,0,0,.85); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+}
+#overlay img {
+  max-width: 90vw; max-height: 90vh;
+  object-fit: contain; border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.6);
+}
+#overlayClose {
+  position: absolute; top: 18px; right: 22px;
+  font-size: 2.4rem; line-height: 1;
+  background: none; border: none; color: #fff;
+  cursor: pointer; padding: 0;
+  filter: drop-shadow(0 0 4px #000);
+}
+#overlayClose:hover { opacity: .75; }
+
 /* Respect “reduce motion” */
 @media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-  }
+  * { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
 }

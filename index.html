@@ -32,21 +32,15 @@
     <!-- RANDOM TAB ------------------------------------------------------ -->
     <section id="random" role="tabpanel">
       <figure id="frame" aria-busy="true">
-
-        <div class="loader" hidden>
-          <div class="spinner" aria-label="Loading"></div>
-        </div>
-        <img id="cat" alt="A wild gato appears!" loading="eager" crossorigin />
+        <div class="loader" hidden><div class="spinner" aria-label="Loading"></div></div>
+        <img id="cat" alt="A wild gato appears!" loading="eager" crossorigin="anonymous" />
       </figure>
 
       <div class="controls">
         <button id="btnMore" class="primary">regenerate cat</button>
         <button id="btnSave" class="primary" disabled>bookmark cat</button>
 
-        <label class="gif-toggle">
-          <input type="checkbox" id="gifToggle" />
-          show gif instead
-        </label>
+        <label class="gif-toggle"><input type="checkbox" id="gifToggle" /> show gif instead</label>
       </div>
 
       <p id="catFact" class="cat-fact" aria-live="polite"></p>
@@ -66,12 +60,7 @@
     <!-- 404 / EASTER EGG PANEL ----------------------------------------- -->
     <section id="notFound" role="tabpanel" hidden>
       <h2>404 – Cat not found! 😿</h2>
-      <img
-        src="https://cataas.com/cat/says/404?"
-        width="320"
-        height="320"
-        alt="Sad cat saying 404"
-      />
+      <img src="https://cataas.com/cat/says/404?" width="320" height="320" alt="Sad cat saying 404">
     </section>
   </main>
 
@@ -80,11 +69,15 @@
 
   <!-- footer only visible on main page -->
   <footer id="siteFooter">
-    Random images by
-    <a href="https://cataas.com" target="_blank" rel="noopener">cataas.com</a><br />
-    Parody of
-    <a href="https://thispersondoesnotexist.com/" target="_blank" rel="noopener">thispersondoesnotexist</a>
+    Random images by <a href="https://cataas.com" target="_blank" rel="noopener">cataas.com</a><br />
+    Parody of <a href="https://thispersondoesnotexist.com/" target="_blank" rel="noopener">thispersondoesnotexist</a>
   </footer>
+
+  <!-- Fullscreen preview overlay (optional; script now copes if absent) -->
+  <div id="overlay" hidden>
+    <button id="overlayClose" aria-label="Close preview">×</button>
+    <img id="overlayImg" alt="enlarged preview">
+  </div>
 
   <!-- Link to js file -->
   <script src="app.js" defer></script>
