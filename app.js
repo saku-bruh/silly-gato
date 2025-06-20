@@ -101,7 +101,7 @@ async function fetchFact() {
     factNode.textContent = `random cat fact: ${fact}`;
   } catch {
     factNode.textContent =
-      'random cat fact: the internet cats are sleeping 😺';
+      'random cat fact: this is a fallback fact... sooo this is awkward';
   }
 }
 
