@@ -1,48 +1,238 @@
-@font-face{font-family:'ComicSansCustom';src:url('fonts/comicsans.ttf') format('truetype')}
+/* =====================  Variables  =================================== */
+:root {
+  --accent: #ff5f9e;
+  --bg-1: #000;
+  --bg-2: #1e1e1e;
+  --border: #fff;
+  --text-light: #fff;
+}
 
-html,body,h1,button,nav button{font-family:'ComicSansCustom',sans-serif}
+/* Force-hide any element carrying the “hidden” attribute */
+[hidden] { display: none !important; }
 
-:root{--accent:#ff5f9e;--bg1:#000;--bg2:#1e1e1e;--border:#fff}
-*{box-sizing:border-box;margin:0;padding:0}
+/* =====================  Font face  =================================== */
+@font-face {
+  font-family: 'ComicSansCustom';
+  src: url('fonts/comicsans.ttf') format('truetype');
+  font-display: swap;
+}
 
-body{min-height:100vh;background:linear-gradient(160deg,var(--bg1),var(--bg2));color:#fff;display:flex;flex-direction:column;align-items:center}
-.title{margin-top:1.2rem;font-size:2.6rem}
+/* Force Comic Sans everywhere */
+html,
+body,
+h1,
+button,
+nav button {
+  font-family: 'ComicSansCustom', sans-serif;
+}
 
-nav{margin-top:2rem;display:flex;gap:1rem;justify-content:center}
-nav button{background:var(--accent);border:none;color:#fff;padding:.6rem 1.2rem;font-size:1rem;border-radius:50px;cursor:pointer;transition:transform .2s;position:relative}
-nav button:hover,nav button.active{transform:scale(1.06)}
-nav button.active::after{content:'';position:absolute;inset:-3px;border-radius:50px;border:2px solid var(--accent);filter:blur(4px);opacity:.6}
+/* =====================  Base reset  ================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-#sectionRandom{display:flex;flex-direction:column;align-items:center}
-#frame{width:min(90vw,640px);height:420px;margin-top:1.5rem;border:4px dashed var(--border);border-radius:16px;position:relative;overflow:hidden;box-shadow:0 8px 30px rgb(0 0 0/.35);backdrop-filter:blur(2px)}
-#frame img{width:100%;height:100%;object-fit:cover;display:none;animation:fade .6s forwards}
-@keyframes fade{to{opacity:1}}
+body {
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text-light);
+  background: linear-gradient(160deg, var(--bg-1), var(--bg-2));
+}
 
-.loader{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#ffffff08;backdrop-filter:blur(6px)}
-.spinner{width:50px;height:50px;border:6px solid #fff3;border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{100%{transform:rotate(360deg)}}
+/* Centre every tab panel’s contents */
+main > section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-#randomControls{margin-top:1rem;display:flex;gap:.8rem;align-items:center}
-button.primary{background:#fff;color:#000;font-weight:600;padding:.7rem 1.4rem;border:none;border-radius:8px;cursor:pointer;transition:.15s transform}
-button.primary:hover{transform:scale(1.05)}
-button.primary:disabled{opacity:.4;cursor:not-allowed}
-.gif-toggle{font-size:.9rem;cursor:pointer;user-select:none}
+/* =====================  Header / Tabs  =============================== */
+.title {
+  margin-top: 1.1rem;
+  font-size: 2.4rem;
+  text-align: center;
+}
 
-.cat-fact{margin-top:1rem;max-width:80%;text-align:center;font-size:1rem;color:#ffcc99}
+nav {
+  margin-top: 2rem;
+}
 
-#album,#bookmarkGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:20px;width:90vw;max-width:900px}
-#album img{max-width:100%;height:auto;border-radius:8px;opacity:0;animation:fade .6s forwards}
-#bookmarkGrid img{max-width:100%;height:auto;border-radius:8px;opacity:1}
+ul.tabs {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 
-#btnClear{display:block;margin:20px auto 0}
+ul.tabs > li > button {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  position: relative;
+}
 
-#toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#e53935;color:#fff;padding:.8rem 1.4rem;border-radius:8px;opacity:0;pointer-events:none;transition:.4s}
-#toast.show{opacity:1}
+ul.tabs > li > button:hover,
+ul.tabs > li > button.active {
+  transform: scale(1.06);
+}
 
-footer{margin:3rem 0 .8rem;font-size:.85rem;color:#fff8;text-align:center}
-a{color:inherit}
-.hidden{display:none!important}
+ul.tabs > li > button.active::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50px;
+  border: 2px solid var(--accent);
+  filter: blur(4px);
+  opacity: 0.6;
+}
 
-.confetti{position:fixed;top:-15vh;width:8px;height:12px;pointer-events:none;z-index:9999;animation:fall 4s linear forwards,spinZ 3s linear infinite}
-@keyframes fall{to{top:105vh;opacity:0}}
-@keyframes spinZ{to{transform:rotate(360deg)}}
+/* =====================  Random-cat frame  ============================ */
+#frame {
+  width: min(92vw, 640px);
+  height: 420px;
+  margin-top: 1.5rem;
+  border: 4px dashed var(--border);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgb(0 0 0 / 0.35);
+}
+
+#frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+#frame img.loaded { opacity: 1; }
+
+/* Loader overlay */
+.loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff0b;
+  backdrop-filter: blur(6px);
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid #fff3;
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* =====================  Controls  ==================================== */
+.controls {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+button.primary {
+  background: #fff;
+  color: #000;
+  font-weight: 600;
+  padding: 0.7rem 1.4rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+button.primary:hover   { transform: scale(1.05); }
+button.primary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.gif-toggle { font-size: 0.9rem; cursor: pointer; user-select: none; }
+
+.cat-fact {
+  margin-top: 1rem;
+  width: 100%;
+  text-align: center;
+  font-size: 1rem;
+  color: #ffcc99;
+}
+
+/* =====================  Image grids  ================================= */
+.masonry {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin: 20px auto 0;
+  width: 92vw;
+  max-width: 900px;
+}
+
+.masonry img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.masonry img.loaded { opacity: 1; }
+
+/* “clear bookmarks” centred */
+#btnClear { display: block; margin: 22px auto 0; }
+
+/* =====================  Toast  ======================================= */
+#toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  translate: -50% 0;
+  background: #e53935;
+  color: #fff;
+  padding: 0.8rem 1.4rem;
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+#toast.show { opacity: 1; }
+
+/* =====================  Confetti  ==================================== */
+.confetti {
+  position: fixed;
+  top: -15vh;
+  width: 8px;
+  height: 12px;
+  pointer-events: none;
+  z-index: 9999;
+  animation: fall 3.5s linear forwards, spinZ 3s linear infinite;
+}
+
+@keyframes fall { to { top: 105vh; opacity: 0; } }
+@keyframes spinZ { to { transform: rotate(360deg); } }
+
+/* Respect “reduce motion” */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

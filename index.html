@@ -1,53 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>thiscatdoesnotexist</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="preload" href="fonts/comicsans.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Random AI cats, facts, GIFs & a very acoustic car ✨" />
+
+  <!-- Comic Sans -->
+  <link rel="preload" href="fonts/comicsans.ttf" as="font" type="font/ttf" crossorigin />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.ico" />
 </head>
+
 <body>
+  <header>
+    <h1 class="title">thiscatdoesnotexist</h1>
 
-  <h1 class="title">thiscatdoesnotexist</h1>
+    <nav aria-label="Main">
+      <ul class="tabs">
+        <li><button data-tab="random" class="active" aria-current="page">gatos</button></li>
+        <li><button data-tab="bookmarks">bookmarks</button></li>
+        <li><button data-tab="album">my acoustic car</button></li>
+      </ul>
+    </nav>
+  </header>
 
-  <nav>
-    <button id="tabRandom" class="active">gatos</button>
-    <button id="tabBookmarks">bookmarks</button>
-    <button id="tabAlbum">my acoustic car</button>
-  </nav>
+  <main>
+    <!-- RANDOM TAB ------------------------------------------------------ -->
+    <section id="random" role="tabpanel">
+      <figure id="frame" aria-busy="true">
 
-  <section id="sectionRandom">
-    <div id="frame">
-      <div id="loaderRandom" class="loader"><div class="spinner"></div></div>
-      <img id="cat" alt="a wild gato has appeared!">
-    </div>
+        <div class="loader" hidden>
+          <div class="spinner" aria-label="Loading"></div>
+        </div>
+        <img id="cat" alt="A wild gato appears!" loading="eager" crossorigin />
+      </figure>
 
-    <div id="randomControls">
-      <button id="btnMore" class="primary">regenerate cat</button>
-      <button id="btnSave" class="primary">bookmark cat</button>
-      <label class="gif-toggle"><input type="checkbox" id="gifToggle"> show gif instead</label>
-    </div>
+      <div class="controls">
+        <button id="btnMore" class="primary">regenerate cat</button>
+        <button id="btnSave" class="primary" disabled>bookmark cat</button>
 
-    <div id="catFact" class="cat-fact"></div>
-  </section>
+        <label class="gif-toggle">
+          <input type="checkbox" id="gifToggle" />
+          show gif instead
+        </label>
+      </div>
 
-  <section id="sectionAlbum" class="hidden">
-    <div id="album"></div>
-  </section>
+      <p id="catFact" class="cat-fact" aria-live="polite"></p>
+    </section>
 
-  <section id="sectionBookmarks" class="hidden">
-    <div id="bookmarkGrid"></div>
-    <button id="btnClear" class="primary" disabled>clear bookmarks</button>
-  </section>
+    <!-- BOOKMARKS TAB --------------------------------------------------- -->
+    <section id="bookmarks" role="tabpanel" hidden>
+      <div id="bookmarkGrid" class="masonry"></div>
+      <button id="btnClear" class="primary" disabled>clear bookmarks</button>
+    </section>
 
-  <div id="toast"></div>
+    <!-- ALBUM TAB ------------------------------------------------------- -->
+    <section id="album" role="tabpanel" hidden>
+      <div id="albumGrid" class="masonry"></div>
+    </section>
 
-  <footer>
-    Random images provided by <a href="https://cataas.com">cataas.com</a><br>
-    Parody site based on <a href="https://thispersondoesnotexist.com/">thispersondoesnotexist</a>
+    <!-- 404 / EASTER EGG PANEL ----------------------------------------- -->
+    <section id="notFound" role="tabpanel" hidden>
+      <h2>404 – Cat not found! 😿</h2>
+      <img
+        src="https://cataas.com/cat/says/404?"
+        width="320"
+        height="320"
+        alt="Sad cat saying 404"
+      />
+    </section>
+  </main>
+
+  <!-- Toast -->
+  <div id="toast" role="status" hidden></div>
+
+  <!-- footer only visible on main page -->
+  <footer id="siteFooter">
+    Random images by
+    <a href="https://cataas.com" target="_blank" rel="noopener">cataas.com</a><br />
+    Parody of
+    <a href="https://thispersondoesnotexist.com/" target="_blank" rel="noopener">thispersondoesnotexist</a>
   </footer>
 
-  <script src="app.js"></script>
+  <!-- Link to js file -->
+  <script src="app.js" defer></script>
 </body>
 </html>

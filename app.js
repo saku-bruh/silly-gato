@@ -1,85 +1,226 @@
-const $ = q => document.querySelector(q)
-function toast(m, s = 3000) { const t = $("#toast"); t.textContent = m; t.classList.add("show"); setTimeout(() => t.classList.remove("show"), s) }
+/* =========================================================================
+   thiscatdoesnotexist
+   ========================================================================= */
+const $ = (sel, ctx = document) => ctx.querySelector(sel);
+const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
-const btnR = $("#tabRandom"), btnB = $("#tabBookmarks"), btnA = $("#tabAlbum")
-const secR = $("#sectionRandom"), secB = $("#sectionBookmarks"), secA = $("#sectionAlbum")
-const btnMore = $("#btnMore"), btnSave = $("#btnSave"), btnClear = $("#btnClear"), gifT = $("#gifToggle")
-let clicksAlbum = 0, albumBuilt = false, bookBuilt = false, savedCurrent = false
-let confettiOn = { v: false }, activePieces = 0
+/* ---------------------------  Constants  ------------------------------ */
+const CAT_ENDPOINT = 'https://cataas.com/cat';
+const FACT_ENDPOINT = 'https://catfact.ninja/fact';
+const BOOK_KEY = 'bookCats';
+const MAX_ALBUM_CLICKS = 10;
+const CONFETTI_BATCH = 25;
+const CONFETTI_TOTAL = 400;
 
-btnR.onclick = () => switchTab("random")
-btnB.onclick = () => { if (!bookBuilt) loadBookmarks(); switchTab("book") }
-btnA.onclick = () => { clicksAlbum++; if (clicksAlbum % 10 === 0) confetti(); switchTab("album") }
-btnClear.onclick = () => { localStorage.bookCats = "[]"; grid.innerHTML = ""; updateClear(); toast("bookmarks cleared") }
+/* ---------------------------  Elements  ------------------------------- */
+const img = $('#cat');
+const loader = $('#frame .loader');
+const btnMore = $('#btnMore');
+const btnSave = $('#btnSave');
+const gifToggle = $('#gifToggle');
+const factNode = $('#catFact');
+const grid = $('#bookmarkGrid');
+const btnClear = $('#btnClear');
+const albumGrid = $('#albumGrid');
+const footer = $('#siteFooter');
 
-function switchTab(t) {
-  btnR.classList.toggle("active", t === "random")
-  btnB.classList.toggle("active", t === "book")
-  btnA.classList.toggle("active", t === "album")
-  secR.classList.toggle("hidden", t !== "random")
-  secB.classList.toggle("hidden", t !== "book")
-  secA.classList.toggle("hidden", t !== "album")
-  $("#frame").style.display = t === "random" ? "block" : "none"
-  $("#randomControls").style.display = t === "random" ? "flex" : "none"
-  if (t === "album" && !albumBuilt) buildAlbum()
+/* ------------------------  Tab system  -------------------------------- */
+const panels = {
+  random: $('#random'),
+  bookmarks: $('#bookmarks'),
+  album: $('#album'),
+  notFound: $('#notFound'),
+};
+const tabButtons = $$('nav button');
+let albumClicks = 0;
+let albumBuilt = false;
+let bookBuilt = false;
+
+tabButtons.forEach(btn =>
+  btn.addEventListener('click', () => activate(btn.dataset.tab)),
+);
+
+function activate(target) {
+  // Easter egg
+  if (target === 'album' && ++albumClicks % MAX_ALBUM_CLICKS === 0) {
+    target = 'notFound';
+    confetti();
+  }
+
+  // Toggle active tab button
+  tabButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === target));
+
+  // Show/hide panels & footer
+  for (const [k, el] of Object.entries(panels)) el.hidden = k !== target;
+  footer.hidden = target !== 'random';
+
+  if (target === 'album' && !albumBuilt) buildAlbum();
+  if (target === 'bookmarks' && !bookBuilt) loadBookmarks();
 }
 
-function updateSave() { btnSave.disabled = savedCurrent || !img.complete || !img.naturalWidth }
-gifT.onchange = updateSave
+/* ------------------  Random cat + fact logic  ------------------------- */
+let savedCurrent = false;
 
-async function newFact() {
+function fetchCat() {
+  loader.hidden = false;
+  img.classList.remove('loaded');
+  btnMore.disabled = true;
+  savedCurrent = false;
+  updateSaveBtn();
+
+  const src = gifToggle.checked
+    ? `${CAT_ENDPOINT}/gif?_=${Date.now()}`
+    : `${CAT_ENDPOINT}?width=${500 + rand(200)}&height=${350 + rand(150)}&_=${Date.now()}`;
+
+  img.src = src;
+  img.alt = gifToggle.checked ? 'A wild cat GIF!' : 'A wild gato appears!';
+  fetchFact();
+}
+
+img.addEventListener('load', () => {
+  loader.hidden = true;
+  img.classList.add('loaded');
+  btnMore.disabled = false;
+  updateSaveBtn();
+});
+
+img.addEventListener('error', () => {
+  toast('Cat escaped — retrying');
+  setTimeout(fetchCat, 1600);
+});
+
+gifToggle.addEventListener('change', fetchCat);
+btnMore.addEventListener('click', fetchCat);
+
+/* -------------------------  Cat facts  -------------------------------- */
+async function fetchFact() {
   try {
-    const j = await fetch("https://catfact.ninja/fact").then(r => r.json())
-    $("#catFact").textContent = "random cat fact: " + j.fact
+    const ctl = new AbortController();
+    const t = setTimeout(() => ctl.abort(), 4500);
+
+    const res = await fetch(FACT_ENDPOINT, { signal: ctl.signal });
+    clearTimeout(t);
+    const { fact } = await res.json();
+    factNode.textContent = `random cat fact: ${fact}`;
   } catch {
-    $("#catFact").textContent = "random cat fact: the internet cats are sleeping 😺"
+    factNode.textContent =
+      'random cat fact: the internet cats are sleeping 😺';
   }
 }
 
-const BASE = "https://cataas.com/cat"
-const img = $("#cat"), loader = $("#loaderRandom")
-function fetchCat() {
-  loader.style.display = "flex"; img.style.display = "none"; btnMore.disabled = true; savedCurrent = false; updateSave()
-  const src = gifT.checked
-    ? `${BASE}/gif?_=${Date.now()}`
-    : `${BASE}?width=${500 + (Math.random() * 200 | 0)}&height=${350 + (Math.random() * 150 | 0)}&_=${Date.now()}`
-  img.crossOrigin = "anonymous"; img.src = src; newFact()
-}
-img.onload = () => { loader.style.display = "none"; img.style.display = "block"; btnMore.disabled = false; updateSave() }
-img.onerror = () => { toast("Cat escaped — retry"); fetchCat() }
-btnMore.onclick = fetchCat
+/* -----------------------  Bookmarks  ---------------------------------- */
+btnSave.addEventListener('click', () => {
+  if (btnSave.disabled) return;
+  const dataUri = canvasFromImage(img);
+  const list = getBooks();
 
-function getMarks() { return JSON.parse(localStorage.bookCats || "[]") }
-function setMarks(a) { localStorage.bookCats = JSON.stringify(a) }
-function updateClear() { btnClear.disabled = getMarks().length === 0 }
+  if (!list.includes(dataUri)) {
+    list.push(dataUri);
+    setBooks(list);
+    addImage(grid, dataUri);
+    toast('bookmarked!');
+  }
+  savedCurrent = true;
+  updateSaveBtn();
+  updateClearBtn();
+});
 
-btnSave.onclick = () => {
-  if (btnSave.disabled) return
-  const c = document.createElement("canvas"); c.width = img.naturalWidth; c.height = img.naturalHeight
-  c.getContext("2d").drawImage(img, 0, 0)
-  const data = c.toDataURL("image/png")
-  const a = getMarks(); if (!a.includes(data)) { a.push(data); setMarks(a); addBookmark(data); updateClear(); toast("bookmarked!") }
-  savedCurrent = true; updateSave()
+btnClear.addEventListener('click', () => {
+  setBooks([]);
+  grid.innerHTML = '';
+  updateClearBtn();
+  toast('bookmarks cleared');
+});
+
+function loadBookmarks() {
+  getBooks().forEach(src => addImage(grid, src));
+  bookBuilt = true;
+  updateClearBtn();
 }
 
-function piece() {
-  const d = document.createElement("div"); d.className = "confetti"
-  d.style.left = Math.random() * 100 + "vw"; d.style.background = `hsl(${Math.random() * 360},80%,60%)`
-  d.style.animationDelay = Math.random() + "s"; d.style.animationDuration = 2.5 + Math.random() * 2 + "s"
-  activePieces++; d.onanimationend = () => { d.remove(); if (--activePieces === 0) confettiOn.v = false }; return d
+function updateSaveBtn() {
+  btnSave.disabled = savedCurrent || !img.complete;
 }
+function updateClearBtn() {
+  btnClear.disabled = getBooks().length === 0;
+}
+function getBooks() {
+  try {
+    return JSON.parse(localStorage.getItem(BOOK_KEY) || '[]');
+  } catch {
+    return [];
+  }
+}
+function setBooks(arr) {
+  localStorage.setItem(BOOK_KEY, JSON.stringify(arr));
+}
+
+/* ----------------------  Acoustic car album  ------------------------- */
+const ALBUM_IMGS = ['mycat/1.jpg', 'mycat/2.jpg', 'mycat/3.jpg'];
+
+function buildAlbum() {
+  ALBUM_IMGS.forEach(src => addImage(albumGrid, src));
+  albumBuilt = true;
+}
+
+/* -------------------------  Confetti  --------------------------------- */
+let confettiOn = false;
 function confetti() {
-  if (confettiOn.v) return; confettiOn.v = true; let s = 0
-  const spawn = () => { for (let i = 0; i < 25 && s < 400; i++, s++) document.body.appendChild(piece()); if (s < 400) requestAnimationFrame(spawn) }
-  spawn()
+  if (confettiOn) return;
+  confettiOn = true;
+
+  let spawned = 0;
+  const loop = () => {
+    for (let i = 0; i < CONFETTI_BATCH && spawned < CONFETTI_TOTAL; i++, spawned++) {
+      document.body.appendChild(makePiece());
+    }
+    if (spawned < CONFETTI_TOTAL) requestAnimationFrame(loop);
+    else setTimeout(() => (confettiOn = false), 3600);
+  };
+  loop();
 }
 
-const album = $("#album"), IMGS = ["mycat/1.jpg", "mycat/2.jpg", "mycat/3.jpg"]
-function addImg(p, src) { const i = new Image(); i.src = src; i.onload = () => i.style.opacity = 1; p.appendChild(i) }
-function buildAlbum() { IMGS.forEach(s => addImg(album, s)); albumBuilt = true }
+function makePiece() {
+  const d = document.createElement('div');
+  d.className = 'confetti';
+  d.style.left = `${Math.random() * 100}vw`;
+  d.style.background = `hsl(${Math.random() * 360},80%,60%)`;
+  d.style.animationDelay = `${Math.random()}s`;
+  d.style.animationDuration = `${2.5 + Math.random() * 2}s`;
+  d.addEventListener('animationend', () => d.remove());
+  return d;
+}
 
-const grid = $("#bookmarkGrid")
-function addBookmark(src) { addImg(grid, src) }
-function loadBookmarks() { grid.innerHTML = ""; getMarks().forEach(src => addImg(grid, src)); updateClear(); bookBuilt = true }
+/* -----------------------  Toast helper  ------------------------------- */
+const toastNode = $('#toast');
+function toast(msg, ms = 3000) {
+  toastNode.textContent = msg;
+  toastNode.hidden = false;
+  toastNode.classList.add('show');
+  setTimeout(() => toastNode.classList.remove('show'), ms);
+}
 
-fetchCat(); switchTab("random")
+/* ----------------------  Utilities  ----------------------------------- */
+function rand(max) {
+  return Math.floor(Math.random() * max);
+}
+
+function addImage(parent, src) {
+  const pic = new Image();
+  pic.loading = 'lazy';
+  pic.src = src;
+  pic.alt = 'cat';
+  pic.addEventListener('load', () => pic.classList.add('loaded'));
+  parent.appendChild(pic);
+}
+
+function canvasFromImage(image) {
+  const c = document.createElement('canvas');
+  c.width = image.naturalWidth;
+  c.height = image.naturalHeight;
+  c.getContext('2d').drawImage(image, 0, 0);
+  return c.toDataURL('image/png');
+}
+
+fetchCat();
+activate('random');
