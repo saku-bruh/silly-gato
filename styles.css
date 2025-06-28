@@ -1,45 +1,79 @@
 /* ================================================================
-   GLOBAL VARIABLES & RESET
+   Global Variables
    ================================================================ */
-:root{
-  --accent:#ff5f9e;
-  --bg-1:#000;
-  --bg-2:#1e1e1e;
-  --border:#fff;
-  --text-light:#fff;
+:root {
+  --accent: #ff5f9e;
+  --bg-1-dark: #000;
+  --bg-2-dark: #1e1e1e;
+  --bg-1-light: #f0f0f0;
+  --bg-2-light: #ffffff;
+  --text-dark: #000;
+  --text-light: #fff;
+  --border-dark: #fff;
+  --border-light: #555;
+  --fact-color-dark: #ffcc99;
+  --fact-color-light: #d9822b;
+  --toast-bg-dark: #e53935;
+  --toast-bg-light: #e53935;
+  --btn-primary-bg-dark: #fff;
+  --btn-primary-bg-light: #333;
+  --btn-primary-text-dark: #000;
+  --btn-primary-text-light: #fff;
+
+  --bg-1: var(--bg-1-dark);
+  --bg-2: var(--bg-2-dark);
+  --text-color: var(--text-light);
+  --border-color: var(--border-dark);
+  --fact-color: var(--fact-color-dark);
+  --toast-bg: var(--toast-bg-dark);
+  --btn-primary-bg: var(--btn-primary-bg-dark);
+  --btn-primary-text: var(--btn-primary-text-dark);
 }
 
-/* remove margin/padding flash & stop sideways scroll everywhere  */
+body.light-theme {
+  --bg-1: var(--bg-1-light);
+  --bg-2: var(--bg-2-light);
+  --text-color: var(--text-dark);
+  --border-color: var(--border-light);
+  --fact-color: var(--fact-color-light);
+  --toast-bg: var(--toast-bg-light);
+  --btn-primary-bg: var(--btn-primary-bg-light);
+  --btn-primary-text: var(--btn-primary-text-light);
+}
+
 *,
 *::before,
-*::after{box-sizing:border-box;margin:0;padding:0}
-
-body{
-  min-height:100vh;
-  overflow-x:hidden;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  color:var(--text-light);
-  background:linear-gradient(160deg,var(--bg-1),var(--bg-2));
-  font-family:'ComicSansCustom',sans-serif;
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* hide any element with the hidden attribute regardless of later rules */
-[hidden]{display:none!important}
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text-color);
+  background: linear-gradient(160deg, var(--bg-1), var(--bg-2));
+  font-family: 'ComicSansCustom', sans-serif;
+  transition: background 0.3s, color 0.3s;
+}
+
+[hidden] {
+  display: none !important;
+}
 
 /* ================================================================
-   FONTS
+   Fonts
    ================================================================ */
-@font-face{
-  font-family:'ComicSansCustom';
-  src:url('fonts/comicsans.ttf') format('truetype');
-  font-display:swap;
+@font-face {
+  font-family: 'ComicSansCustom';
+  src: url('fonts/comicsans.ttf') format('truetype');
+  font-display: swap;
 }
 
-/* ------------------------------------------------------------------ */
-/* Ensure ALL buttons render in Comic Sans                            */
-/* ------------------------------------------------------------------ */
 button,
 ul.tabs button,
 button.primary {
@@ -47,249 +81,484 @@ button.primary {
 }
 
 /* ================================================================
-   HEADER & NAV
+   Header & Nav
    ================================================================ */
-.title{
-  margin-top:1.2rem;
-  font-size:clamp(1.8rem,6vw,2.6rem);
-  text-align:center;
+header {
+  width: 100%;
 }
 
-nav{
-  margin-top:2rem;
-  width:100%;
-  display:flex;
-  justify-content:center;
+.header-top {
+  padding: 0 1rem;
 }
 
-ul.tabs{
-  display:flex;
-  gap:1rem;
-  flex-wrap:wrap;
-  list-style:none;
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
-ul.tabs button{
-  background:var(--accent);
-  border:none;
-  color:#fff;
-  padding:.55rem 1.2rem;
-  font-size:clamp(.9rem,3.6vw,1rem);
-  border-radius:50px;
-  cursor:pointer;
-  transition:transform .2s;
-  position:relative;
+.title {
+  margin-top: 1.2rem;
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  text-align: left;
+  flex-grow: 1;
+}
+
+.theme-container {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 1.2rem;
+}
+
+#themeLabel {
+  font-size: 0.9rem;
+  color: var(--text-color);
+  transition: color 0.3s;
+  user-select: none;
+}
+
+.theme-toggle-label {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+}
+.theme-toggle-label input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 28px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: var(--accent);
+}
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+nav {
+  margin-top: 1.5rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+ul.tabs {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  list-style: none;
+}
+
+ul.tabs button {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  padding: 0.55rem 1.2rem;
+  font-size: clamp(0.9rem, 3.6vw, 1rem);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  position: relative;
 }
 ul.tabs button:hover,
-ul.tabs button.active{transform:scale(1.06)}
-
-ul.tabs button.active::after{
-  content:'';
-  position:absolute;
-  inset:-3px;
-  border:2px solid var(--accent);
-  border-radius:50px;
-  filter:blur(4px);
-  opacity:.6;
+ul.tabs button.active {
+  transform: scale(1.06);
 }
 
-/* ================================================================
-   SECTIONS (layout wrapper)
-   ================================================================ */
-main>section{
-  width:100%;
-  max-width:900px;
-  padding:0 1rem;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
+ul.tabs button.active::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border: 2px solid var(--accent);
+  border-radius: 50px;
+  filter: blur(4px);
+  opacity: 0.6;
 }
 
-/* ================================================================
-   RANDOM CAT FRAME
-   ================================================================ */
-#frame{
-  width:100%;
-  max-width:640px;
-  aspect-ratio:3/2;
-  margin-top:1.5rem;
-  border:4px dashed var(--border);
-  border-radius:16px;
-  overflow:hidden;
-  position:relative;
-  box-shadow:0 8px 30px rgb(0 0 0 / .35);
-}
+@media (max-width: 480px) {
+  .header-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
 
-#frame img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  opacity:0;
-  transition:opacity .4s ease;
-}
-#frame img.loaded{opacity:1}
+  .title {
+    text-align: center;
+    margin-top: 1rem;
+  }
 
-/* Loader */
-.loader{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  backdrop-filter:blur(6px);
-  background:#ffffff0b;
-}
-.spinner{
-  width:50px;height:50px;
-  border:6px solid #fff3;
-  border-top-color:#fff;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* ================================================================
-   CONTROLS
-   ================================================================ */
-.controls{
-  margin-top:1.1rem;
-  display:flex;
-  gap:.8rem;
-  flex-wrap:wrap;
-  justify-content:center;
-}
-
-button.primary{
-  background:#fff;
-  color:#000;
-  font-weight:600;
-  padding:.7rem 1.5rem;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  transition:transform .15s;
-  font-size:clamp(.92rem,3.8vw,1rem);
-}
-button.primary:hover{transform:scale(1.05)}
-button.primary:disabled{opacity:.45;cursor:not-allowed}
-
-.gif-toggle{
-  font-size:clamp(.85rem,3.6vw,.95rem);
-  cursor:pointer;
-  user-select:none;
-}
-
-/* ================================================================
-   CAT FACT (responsive & readable)
-   ================================================================ */
-.cat-fact{
-  margin-top:1rem;
-  max-width:92vw;
-  text-align:center;
-  font-size:clamp(.9rem,4vw,1.05rem);
-  color:#ffcc99;
-  text-transform:lowercase;
-  overflow-wrap:break-word;
-  padding:0 .6rem;
-}
-
-/* ================================================================
-   MASONRY GRID  – centred on desktop, tidy on phones
-   ================================================================ */
-.masonry{
-  width:100%;
-  margin-top:20px;
-  display:grid;
-  gap:14px;
-  justify-content:center;
-  grid-auto-flow:dense;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-}
-
-@media (max-width:480px){
-  .masonry{
-    gap:10px;
-    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  .theme-container {
+    margin-top: 0.5rem;
   }
 }
 
-/* Thumbnails */
-.masonry img{
-  width:100%;
-  height:100%;
-  aspect-ratio:1/1;
-  object-fit:cover;
-  border-radius:8px;
-  opacity:0;
-  transition:opacity .4s ease;
-}
-.masonry img.loaded{opacity:1}
-
-/* shrink grid columns gracefully on narrow phones */
-@media (max-width:480px){
-  .masonry{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
-}
-
-#btnClear{
-  display:block;
-  margin:22px auto 0;
+/* ================================================================
+   Sections (Layout wrapper)
+   ================================================================ */
+main > section {
+  width: 100%;
+  max-width: 900px;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* ================================================================
-   TOAST
+   Random cat image/GIF (Frame)
    ================================================================ */
-#toast{
-  position:fixed;
-  bottom:30px;left:50%;translate:-50% 0;
-  background:#e53935;
-  color:#fff;
-  padding:.8rem 1.4rem;
-  border-radius:8px;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .4s ease;
-  font-size:clamp(.8rem,3.5vw,.95rem);
+#frame {
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 3/2;
+  margin-top: 1.5rem;
+  border: 4px dashed var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 8px 30px rgb(0 0 0 / 0.35);
+  transition: border-color 0.3s;
 }
-#toast.show{opacity:1}
+
+#frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+#frame img.loaded {
+  opacity: 1;
+}
+
+.loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, 0.044);
+}
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid #ffffff4d;
+  border-top-color: var(--border-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 /* ================================================================
-   CONFETTI (unchanged)
+   Controls
    ================================================================ */
-.confetti{
-  position:fixed;top:-15vh;width:8px;height:12px;pointer-events:none;
-  z-index:9999;
-  animation:fall 3.5s linear forwards,spinZ 3s linear infinite;
+.naming-controls {
+  margin-top: 1.1rem;
+  width: 100%;
+  max-width: 400px;
 }
-@keyframes fall{to{top:105vh;opacity:0}}
-@keyframes spinZ{to{transform:rotate(360deg)}}
+#catName {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  background: var(--bg-2);
+  color: var(--text-color);
+  font-family: 'ComicSansCustom', sans-serif;
+  font-size: clamp(0.9rem, 3.8vw, 1rem);
+  text-align: center;
+}
+#catName::placeholder {
+  color: #999;
+}
+
+.controls {
+  margin-top: 1.1rem;
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+button.primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  font-weight: 600;
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.3s, color 0.3s;
+  font-size: clamp(0.92rem, 3.8vw, 1rem);
+}
+button.primary:hover {
+  transform: scale(1.05);
+}
+button.primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.gif-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: clamp(0.85rem, 3.6vw, 0.95rem);
+  cursor: pointer;
+  user-select: none;
+}
 
 /* ================================================================
-   FULLSCREEN PREVIEW OVERLAY
+   Cat fact
    ================================================================ */
-#overlay{
-  position:fixed;inset:0;z-index:10000;
-  background:rgba(0,0,0,.85);
-  backdrop-filter:blur(4px);
-  display:flex;align-items:center;justify-content:center;
+.cat-fact {
+  margin-top: 1rem;
+  max-width: 92vw;
+  text-align: center;
+  font-size: clamp(0.9rem, 4vw, 1.05rem);
+  color: var(--fact-color);
+  text-transform: lowercase;
+  overflow-wrap: break-word;
+  padding: 0 0.6rem;
+  transition: color 0.3s;
 }
-#overlay img{
-  max-width:90vw;max-height:90vh;
-  object-fit:contain;
-  border-radius:10px;
-  box-shadow:0 8px 32px rgba(0,0,0,.6);
-}
-#overlayClose{
-  position:absolute;top:18px;right:22px;
-  font-size:2.4rem;line-height:1;
-  background:none;border:none;color:#fff;cursor:pointer;padding:0;
-  filter:drop-shadow(0 0 4px #000);
-}
-#overlayClose:hover{opacity:.75}
-@media (max-width:480px){#overlayClose{font-size:2rem;top:14px;right:16px}}
 
 /* ================================================================
-   REDUCE-MOTION ACCESSIBILITY
+   Masonry Grid & Bookmarks
    ================================================================ */
-@media (prefers-reduced-motion:reduce){
-  *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+.masonry {
+  width: 100%;
+  margin-top: 20px;
+  display: grid;
+  gap: 14px;
+  justify-content: center;
+  grid-auto-flow: dense;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.bookmark-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.masonry img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  display: block;
+}
+.masonry img.loaded {
+  opacity: 1;
+}
+
+.bookmark-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 8px;
+  text-align: center;
+  font-size: 0.9rem;
+  overflow-wrap: break-word;
+}
+.download-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--accent);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.download-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.delete-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #e53935;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.delete-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.download-btn svg,
+.delete-btn svg {
+  width: 18px;
+  height: 18px;
+  color: white;
+}
+
+@media (max-width: 480px) {
+  .masonry {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+  }
+}
+
+#btnClear {
+  display: block;
+  margin: 22px auto 0;
+}
+
+/* ================================================================
+   Toast notif
+   ================================================================ */
+#toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  translate: -50% 0;
+  background: var(--toast-bg);
+  color: #fff;
+  padding: 0.8rem 1.4rem;
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  font-size: clamp(0.8rem, 3.5vw, 0.95rem);
+}
+#toast.show {
+  opacity: 1;
+}
+
+/* ================================================================
+   Confetti
+   ================================================================ */
+.confetti {
+  position: fixed;
+  top: -15vh;
+  width: 8px;
+  height: 12px;
+  pointer-events: none;
+  z-index: 9999;
+  animation: fall 3.5s linear forwards, spinZ 3s linear infinite;
+}
+@keyframes fall {
+  to {
+    top: 105vh;
+    opacity: 0;
+  }
+}
+@keyframes spinZ {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ================================================================
+   Fullscreen image preview
+   ================================================================ */
+#overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#overlay img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+#overlayClose {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  font-size: 2.4rem;
+  line-height: 1;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 0;
+  filter: drop-shadow(0 0 4px #000);
+}
+#overlayClose:hover {
+  opacity: 0.75;
+}
+@media (max-width: 480px) {
+  #overlayClose {
+    font-size: 2rem;
+    top: 14px;
+    right: 16px;
+  }
+}
+
+/* ================================================================
+   Reduce motion
+   ================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

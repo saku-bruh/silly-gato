@@ -3,22 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <title>thiscatdoesnotexist</title>
-
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="random cat pictures, GIFs, facts & also a very acoustic car 🥀" />
 
-  <!-- Comic Sans -->
   <link rel="preload" href="fonts/comicsans.ttf" as="font" type="font/ttf" crossorigin />
 
-  <!-- Styles -->
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" href="favicon.ico" />
 </head>
-
 <body>
-  <header>
-    <h1 class="title">thiscatdoesnotexist</h1>
 
+  <header>
+    <div class="header-top">
+      <div class="header-content">
+        <h1 class="title">thiscatdoesnotexist</h1>
+        <div class="theme-container">
+          <span id="themeLabel">dark mode</span>
+          <div class="theme-switcher">
+            <label for="themeToggle" class="theme-toggle-label">
+              <input type="checkbox" id="themeToggle" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
     <nav aria-label="Main">
       <ul class="tabs">
         <li><button data-tab="random" class="active" aria-current="page">gatos</button></li>
@@ -29,57 +38,51 @@
   </header>
 
   <main>
-    <!-- RANDOM TAB ------------------------------------------------------ -->
     <section id="random" role="tabpanel">
       <figure id="frame" aria-busy="true">
         <div class="loader" hidden><div class="spinner" aria-label="Loading"></div></div>
         <img id="cat" alt="A wild gato appears!" loading="eager" crossorigin="anonymous" />
       </figure>
-
+      <div class="naming-controls">
+        <input type="text" id="catName" placeholder="Name this cat..." />
+      </div>
       <div class="controls">
         <button id="btnMore" class="primary">regenerate cat</button>
         <button id="btnSave" class="primary" disabled>bookmark cat</button>
-
         <label class="gif-toggle"><input type="checkbox" id="gifToggle" /> show gif instead</label>
       </div>
-
       <p id="catFact" class="cat-fact" aria-live="polite"></p>
     </section>
 
-    <!-- BOOKMARKS TAB --------------------------------------------------- -->
     <section id="bookmarks" role="tabpanel" hidden>
       <div id="bookmarkGrid" class="masonry"></div>
-      <button id="btnClear" class="primary" disabled>clear bookmarks</button>
+      <button id="btnClear" class="primary" disabled>clear all bookmarks</button>
     </section>
 
-    <!-- ALBUM TAB ------------------------------------------------------- -->
     <section id="album" role="tabpanel" hidden>
       <div id="albumGrid" class="masonry"></div>
     </section>
 
-    <!-- 404 / EASTER EGG PANEL ----------------------------------------- -->
     <section id="notFound" role="tabpanel" hidden>
       <h2>404 – Cat not found! 😿</h2>
       <img src="https://cataas.com/cat/says/404?" width="320" height="320" alt="Sad cat saying 404">
     </section>
   </main>
 
-  <!-- Toast -->
   <div id="toast" role="status" hidden></div>
 
-  <!-- footer only visible on main page -->
-  <footer id="siteFooter">
-    Random images by <a href="https://cataas.com" target="_blank" rel="noopener">cataas.com</a><br />
-    Parody of <a href="https://thispersondoesnotexist.com/" target="_blank" rel="noopener">thispersondoesnotexist</a>
-  </footer>
-
-  <!-- Fullscreen preview overlay (optional; script now copes if absent) -->
   <div id="overlay" hidden>
     <button id="overlayClose" aria-label="Close preview">×</button>
     <img id="overlayImg" alt="enlarged preview">
   </div>
 
-  <!-- Link to js file -->
+  <footer id="siteFooter">
+    Random images by <a href="https://cataas.com" target="_blank" rel="noopener">cataas.com</a><br />
+    Parody of <a href="https://thispersondoesnotexist.com/" target="_blank" rel="noopener">thispersondoesnotexist</a>
+  </footer>
+
+  <audio id="meowSfx" src="https://actions.google.com/sounds/v1/animals/cat_meow.ogg" preload="auto"></audio>
+
   <script src="app.js" defer></script>
 </body>
 </html>
